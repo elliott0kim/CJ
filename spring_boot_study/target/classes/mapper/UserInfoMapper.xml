@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="CJ.CJ.mapper.client.UserInfoMapper">
+
+    <select id="findUserInfoForReportHistory" parameterType="hashmap" resultType="CJ.CJ.dto.client.History.ReportHistoryResDto">
+        SELECT
+        u.userId,
+        u.name,
+        u.phoneNum,
+        u.gender,
+        u.birth,
+        u.height,
+        u.weight,
+        u.threshold,
+        u.reportCountTotal,
+        u.reportCountToday,
+        r.reportHeartRate,
+        r.reportDateTime,
+        r.action,
+        r.locationXPos,
+        r.locationYPos
+        FROM UserInfo u
+        INNER JOIN ReportHistory r ON u.userId = r.userId
+        WHERE
+        r.reportDateTime BETWEEN #{startDate} AND #{endDate}
+        <if test="userId != null and userId != ''">
+            AND u.userId = #{userId}
+        </if>
+        <if test="action != null and action != ''">
+            AND r.action = #{action}
+        </if>;
+    </select>
+
+    <select id="findUserInfoByWorkNow" resultType="CJ.CJ.dto.client.History.WorkNowResDto">
+        SELECT
+        u.userId,
+        u.name,
+        u.phoneNum,
+        u.gender,
+        u.birth,
+        u.height,
+        u.weight,
+        u.threshold,
+        u.reportCountTotal,
+        u.reportCountToday
+        FROM UserInfo u
+        INNER JOIN WorkStatus w ON u.userId = w.userId
+        WHERE
+        w.workStatus = 1;
+    </select>
+
+    <select id="findLevelByUserId" parameterType="hashmap" resultType="short">
+        SELECT
+        level
+        FROM UserInfo
+        WHERE
+        userId = #{userId};
+    </select>
+
+    <select id="checkFistMember" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM UserInfo;
+    </select>
+
+    <select id="findUserInfoByWorkDate" parameterType="hashmap" resultType="CJ.CJ.dto.client.user.UserinfoNoPasswordLevelDto">
+        SELECT
+        u.userId,
+        u.name,
+        u.phoneNum,
+        u.gender,
+        u.birth,
+        u.height,
+        u.weight,
+        u.threshold,
+        u.reportCountTotal,
+        u.reportCountToday
+        FROM UserInfo u
+        INNER JOIN HeartRateHistory h ON u.userId = h.userId
+        WHERE
+        h.workDate BETWEEN #{startWorkDate} AND #{endWorkDate}
+        <if test="userId != null and userId != ''">
+            AND u.userId = #{userId}
+        </if>;
+    </select>
+
+    <update id="updateUserInfoThreshold" parameterType="hashmap">
+        UPDATE UserInfo
+        SET threshold = #{threshold}
+        WHERE userId = #{userId}
+    </update>
+
+    <update id="updateActionByUserId" parameterType="hashmap">
+        UPDATE ReportHistory
+        SET action = #{action}
+        WHERE userId = #{userId}
+        AND reportDateTime = #{reportDateTime};
+    </update>
+
+    <update id="updateWorkNowByUserId" parameterType="hashmap">
+        UPDATE workStatus
+        SET workStatus = CASE
+        WHEN workStatus = 0 THEN 1
+        WHEN workStatus = 1 THEN 0
+        ELSE workStatus
+        END
+        WHERE userId = #{userId};
+    </update>
+
+    <select id="findUserInfoById" parameterType="hashmap" resultType="CJ.CJ.dto.client.user.UserInfoDto">
+        SELECT
+        userId,
+        password,
+        name,
+        phoneNum,
+        gender,
+        birth,
+        height,
+        weight,
+        threshold,
+        reportCountTotal,
+        reportCountToday
+        FROM UserInfo
+        WHERE userId = #{userId}
+    </select>
+
+    <insert id="registerUserInfo" parameterType="hashmap">
+        INSERT INTO UserInfo
+        (userId, password, name, phoneNum, gender, birth, height, weight, level)
+        VALUES
+        (#{userId}, #{password}, #{name}, #{phoneNum}, #{gender}, #{birth}, #{height}, #{weight}, #{level})
+    </insert>
+</mapper>

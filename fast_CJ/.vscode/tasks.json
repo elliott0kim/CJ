@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build with boost",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++17",
+                "-I/usr/local/opt/boost/include",  // 인클루드 경로
+                "-I${workspaceFolder}/vcpkg/installed/x64-osx/include", 
+                "-L/usr/local/opt/boost/lib",  // 라이브러리 경로
+                "-lboost_system",  // Boost System 라이브러리 링크
+                "-lboost_json",
+                "${workspaceFolder}/cj_server.cpp",  // 컴파일할 소스 파일
+                "${workspaceFolder}/token_parser.cpp",
+                //"${workspaceFolder}/session.cpp",
+                "-g",
+                "-o", "${workspaceFolder}/cj_server"  // 출력 파일
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        }
+    ]
+}
