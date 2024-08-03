@@ -23,62 +23,6 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `CJ` /*!40100 DEFAULT CHARACTER SET utf
 
 USE `CJ`;
 
---
--- Table structure for table `HeartRateHistory`
---
-
-DROP TABLE IF EXISTS `HeartRateHistory`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `HeartRateHistory` (
-  `workDate` date NOT NULL,
-  `userId` varchar(48) NOT NULL,
-  `heartRateByteStream` blob NOT NULL,
-  KEY `userId` (`userId`),
-  CONSTRAINT `heartratehistory_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `UserInfo` (`userId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `HeartRateHistory`
---
-
-LOCK TABLES `HeartRateHistory` WRITE;
-/*!40000 ALTER TABLE `HeartRateHistory` DISABLE KEYS */;
-INSERT INTO `HeartRateHistory` VALUES ('2024-07-01','jeremy',_binary 'HeartRateStream01'),('2024-07-01','elliott',_binary 'HeartRateStream02'),('2024-07-02','jeremy',_binary 'HeartRateStream03'),('2024-07-02','elliott',_binary 'HeartRateStream04'),('2024-07-03','jeremy',_binary 'HeartRateStream05'),('2024-07-03','elliott',_binary 'HeartRateStream06'),('2024-07-04','jeremy',_binary 'HeartRateStream07'),('2024-07-04','elliott',_binary 'HeartRateStream08'),('2024-07-05','jeremy',_binary 'HeartRateStream09'),('2024-07-05','elliott',_binary 'HeartRateStream10'),('2024-07-06','jeremy',_binary 'HeartRateStream11'),('2024-07-06','elliott',_binary 'HeartRateStream12'),('2024-07-07','jeremy',_binary 'HeartRateStream13'),('2024-07-07','elliott',_binary 'HeartRateStream14'),('2024-07-08','jeremy',_binary 'HeartRateStream15'),('2024-07-08','elliott',_binary 'HeartRateStream16'),('2024-07-09','jeremy',_binary 'HeartRateStream17'),('2024-07-09','elliott',_binary 'HeartRateStream18'),('2024-07-10','jeremy',_binary 'HeartRateStream19'),('2024-07-10','elliott',_binary 'HeartRateStream20'),('2024-07-11','jeremy',_binary 'HeartRateStream21'),('2024-07-11','elliott',_binary 'HeartRateStream22'),('2024-07-12','jeremy',_binary 'HeartRateStream23'),('2024-07-12','elliott',_binary 'HeartRateStream24'),('2024-07-13','jeremy',_binary 'HeartRateStream25'),('2024-07-13','elliott',_binary 'HeartRateStream26'),('2024-07-14','jeremy',_binary 'HeartRateStream27'),('2024-07-14','elliott',_binary 'HeartRateStream28'),('2024-07-15','jeremy',_binary 'HeartRateStream29'),('2024-07-15','elliott',_binary 'HeartRateStream30');
-/*!40000 ALTER TABLE `HeartRateHistory` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ReportHistory`
---
-
-DROP TABLE IF EXISTS `ReportHistory`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `ReportHistory` (
-  `userId` varchar(48) NOT NULL,
-  `threshold` tinyint unsigned DEFAULT NULL,
-  `reportHeartRate` tinyint unsigned NOT NULL,
-  `reportDateTime` datetime NOT NULL,
-  `action` tinyint unsigned DEFAULT NULL,
-  `locationXPos` double NOT NULL,
-  `locationYPos` double NOT NULL,
-  KEY `userId` (`userId`),
-  KEY `threshold` (`threshold`),
-  CONSTRAINT `reporthistory_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `UserInfo` (`userId`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ReportHistory`
---
-
-LOCK TABLES `ReportHistory` WRITE;
-/*!40000 ALTER TABLE `ReportHistory` DISABLE KEYS */;
-INSERT INTO `ReportHistory` VALUES ('jeremy',162,185,'2024-07-17 16:00:00',3,51.5074,-0.1278),('jeremy',162,175,'2024-07-20 14:30:00',1,37.7749,-122.4194),('elliott',152,180,'2024-07-19 10:15:00',2,34.0522,-118.2437),('elliott',152,190,'2024-07-18 08:45:00',0,40.7128,-74.006),('jeremy',162,185,'2024-07-17 16:00:00',3,51.5074,-0.1278),('elliott',152,195,'2024-07-16 12:30:00',NULL,48.8566,2.3522),('elliott',152,140,'2024-07-24 04:16:57',0,15,25),('elliott',152,140,'2024-07-24 04:20:07',0,15.23,25.35);
-/*!40000 ALTER TABLE `ReportHistory` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `UserInfo`
@@ -136,6 +80,67 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+
+
+
+--
+-- Table structure for table `HeartRateHistory`
+--
+
+DROP TABLE IF EXISTS `HeartRateHistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `HeartRateHistory` (
+  `workDate` date NOT NULL,
+  `userId` varchar(48) NOT NULL,
+  `heartRateByteStream` blob NOT NULL,
+  KEY `userId` (`userId`),
+  CONSTRAINT `heartratehistory_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `UserInfo` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `HeartRateHistory`
+--
+
+LOCK TABLES `HeartRateHistory` WRITE;
+/*!40000 ALTER TABLE `HeartRateHistory` DISABLE KEYS */;
+INSERT INTO `HeartRateHistory` VALUES ('2024-07-01','jeremy',_binary 'HeartRateStream01'),('2024-07-01','elliott',_binary 'HeartRateStream02'),('2024-07-02','jeremy',_binary 'HeartRateStream03'),('2024-07-02','elliott',_binary 'HeartRateStream04'),('2024-07-03','jeremy',_binary 'HeartRateStream05'),('2024-07-03','elliott',_binary 'HeartRateStream06'),('2024-07-04','jeremy',_binary 'HeartRateStream07'),('2024-07-04','elliott',_binary 'HeartRateStream08'),('2024-07-05','jeremy',_binary 'HeartRateStream09'),('2024-07-05','elliott',_binary 'HeartRateStream10'),('2024-07-06','jeremy',_binary 'HeartRateStream11'),('2024-07-06','elliott',_binary 'HeartRateStream12'),('2024-07-07','jeremy',_binary 'HeartRateStream13'),('2024-07-07','elliott',_binary 'HeartRateStream14'),('2024-07-08','jeremy',_binary 'HeartRateStream15'),('2024-07-08','elliott',_binary 'HeartRateStream16'),('2024-07-09','jeremy',_binary 'HeartRateStream17'),('2024-07-09','elliott',_binary 'HeartRateStream18'),('2024-07-10','jeremy',_binary 'HeartRateStream19'),('2024-07-10','elliott',_binary 'HeartRateStream20'),('2024-07-11','jeremy',_binary 'HeartRateStream21'),('2024-07-11','elliott',_binary 'HeartRateStream22'),('2024-07-12','jeremy',_binary 'HeartRateStream23'),('2024-07-12','elliott',_binary 'HeartRateStream24'),('2024-07-13','jeremy',_binary 'HeartRateStream25'),('2024-07-13','elliott',_binary 'HeartRateStream26'),('2024-07-14','jeremy',_binary 'HeartRateStream27'),('2024-07-14','elliott',_binary 'HeartRateStream28'),('2024-07-15','jeremy',_binary 'HeartRateStream29'),('2024-07-15','elliott',_binary 'HeartRateStream30');
+/*!40000 ALTER TABLE `HeartRateHistory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ReportHistory`
+--
+
+DROP TABLE IF EXISTS `ReportHistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ReportHistory` (
+  `userId` varchar(48) NOT NULL,
+  `threshold` tinyint unsigned DEFAULT NULL,
+  `reportHeartRate` tinyint unsigned NOT NULL,
+  `reportDateTime` datetime NOT NULL,
+  `action` tinyint unsigned DEFAULT NULL,
+  `locationXPos` double NOT NULL,
+  `locationYPos` double NOT NULL,
+  KEY `userId` (`userId`),
+  KEY `threshold` (`threshold`),
+  CONSTRAINT `reporthistory_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `UserInfo` (`userId`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ReportHistory`
+--
+
+LOCK TABLES `ReportHistory` WRITE;
+/*!40000 ALTER TABLE `ReportHistory` DISABLE KEYS */;
+INSERT INTO `ReportHistory` VALUES ('jeremy',162,185,'2024-07-17 16:00:00',3,51.5074,-0.1278),('jeremy',162,175,'2024-07-20 14:30:00',1,37.7749,-122.4194),('elliott',152,180,'2024-07-19 10:15:00',2,34.0522,-118.2437),('elliott',152,190,'2024-07-18 08:45:00',0,40.7128,-74.006),('jeremy',162,185,'2024-07-17 16:00:00',3,51.5074,-0.1278),('elliott',152,195,'2024-07-16 12:30:00',NULL,48.8566,2.3522),('elliott',152,140,'2024-07-24 04:16:57',0,15,25),('elliott',152,140,'2024-07-24 04:20:07',0,15.23,25.35);
+/*!40000 ALTER TABLE `ReportHistory` ENABLE KEYS */;
+UNLOCK TABLES;
+
 
 --
 -- Table structure for table `WorkStatus`
