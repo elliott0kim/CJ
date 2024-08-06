@@ -35,7 +35,7 @@ public class AuthService {
     {
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("userId",loginReqDto.getUserId());
-        UserInfoDto userInfoDto = userInfoMapper.findUserInfoById(paramMap);
+        UserInfoDto userInfoDto = userInfoMapper.findUserInfoByUserId(paramMap);
         if (userInfoDto == null)
         {
             throw new EmptyResultDataAccessException(0);
@@ -60,11 +60,11 @@ public class AuthService {
         paramMap.put("weight", registerDto.getWeight());
         if (checkFistMember() == true)
         {
-            paramMap.put("level", 0);
+            paramMap.put("level", 1);
         }
         else
         {
-            paramMap.put("level", 1);
+            paramMap.put("level", 0);
         }
         //paramMap.put("level", 1); // 0 is Admin , 1 is Member, so do something for Admin register
         userInfoMapper.registerUserInfo(paramMap);
@@ -89,7 +89,7 @@ public class AuthService {
     {
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("userId", checkIdDuplicationReqDto.getUserId());
-        UserInfoDto userInfoDto = userInfoMapper.findUserInfoById(paramMap);
+        UserInfoDto userInfoDto = userInfoMapper.findUserInfoByUserId(paramMap);
         if (userInfoDto != null)
         {
             MessageComponent messageComponent = new MessageComponent();
@@ -112,7 +112,7 @@ public class AuthService {
     {
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("userId",userId);
-        UserInfoDto userInfoDto = userInfoMapper.findUserInfoById(paramMap);
+        UserInfoDto userInfoDto = userInfoMapper.findUserInfoByUserId(paramMap);
         if (userInfoDto == null)
         {
             throw new IllegalArgumentException();

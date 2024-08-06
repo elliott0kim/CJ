@@ -4,18 +4,14 @@ import CJ.CJ.dto.client.History.*;
 import CJ.CJ.dto.client.user.UserinfoNoPasswordLevelDto;
 import CJ.CJ.mapper.client.HeartRateHistoryMapper;
 import CJ.CJ.mapper.client.UserInfoMapper;
-import CJ.CJ.service.StringToByteArray;
+import CJ.CJ.mapper.server.FindUserIdByWorkDateMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.util.*;
-
-//import static CJ.CJ.service.StringToByteArray.convertStringToByteArray;
 
 @Service
 @Slf4j
@@ -24,16 +20,8 @@ public class MemberHistoryInfoService {
     UserInfoMapper userInfoMapper;
 
     @Autowired
-    HeartRateHistoryMapper heartRateHistoryMapper;
+    FindUserIdByWorkDateMapper findUserIdByWorkDateMapper;
 
-    public byte[] base64ToByteArray(String base64EncodedData)
-    {
-        if (base64EncodedData != null) {
-            return Base64.getDecoder().decode(base64EncodedData);
-        } else {
-            return null;
-        }
-    }
 
     @Transactional
     public List<ReportHistoryResDto> reportHistory(ReportHistoryReqDto reportHistoryReqDto)
@@ -67,45 +55,36 @@ public class MemberHistoryInfoService {
         {
             throw new EmptyResultDataAccessException(0);
         }
-
-        List<WorkNowResDto> workNowResDtoList = new ArrayList<>();
-        for (int idx = 0 ; idx < workNowList.size() ; idx++)
-        {
-            WorkNowResDto workNowResDto = (WorkNowResDto) workNowList.get(idx);
-
-            HashMap<String, Object> paramMap = new HashMap<>();
-            paramMap.put("userId",workNowResDto.getUserId());
-            try
-            {
-                HashMap<String, Object> heartRateHashMap = heartRateHistoryMapper.getByteArray(paramMap);
-                int[] heartRateByteArray = StringToByteArray.blotToShortArray(heartRateHashMap);
-                if (heartRateByteArray.length < 1)
-                {
-                    throw new EmptyResultDataAccessException(0);
-                }
-                short lastHeartRate = (short) heartRateByteArray[heartRateByteArray.length - 1];
-                workNowResDto.setLastHeartRate((short) lastHeartRate);
-                workNowResDtoList.add(workNowResDto);
-            }
-            catch (Exception e)
-            {
-                throw new RuntimeException(); // 전체 스택 트레이스를 출력하여 원인 예외를 확인
-            }
-        }
-        return workNowResDtoList;
+        return workNowList;
     }
 
     @Transactional
     public List<UserinfoNoPasswordLevelDto> member(TotalMemberReqDto totalMemberReqDto)
     {
         HashMap<String, Object> paramMap = new HashMap<>();
-        if (totalMemberReqDto.getUserId() != null)
+        List<UserinfoNoPasswordLevelDto> userinfoNoPasswordLevelDtoList = new ArrayList<>();
+        if (totalMemberReqDto.getUserId() != null && !totalMemberReqDto.getUserId().equals("NULL") && !totalMemberReqDto.getUserId().equals("null"))
         {
             paramMap.put("userId",totalMemberReqDto.getUserId());
+            UserinfoNoPasswordLevelDto userinfoNoPasswordLevelDto = userInfoMapper.findUserInfoByUserIdNoPassword(paramMap);
+            userinfoNoPasswordLevelDtoList.add(userinfoNoPasswordLevelDto);
         }
-        paramMap.put("startWorkDate",totalMemberReqDto.getStartWorkDate());
-        paramMap.put("endWorkDate",totalMemberReqDto.getEndWorkDate()); //이거 신고 날짜조회하는데 신고 들어간 시작 일자 맞지?
-        List<UserinfoNoPasswordLevelDto> userinfoNoPasswordLevelDtoList = userInfoMapper.findUserInfoByWorkDate(paramMap);
+        else
+        {
+            paramMap.put("startWorkDate",totalMemberReqDto.getStartWorkDate());
+            paramMap.put("endWorkDate",totalMemberReqDto.getEndWorkDate()); //이거 신고 날짜조회하는데 신고 들어간 시작 일자 맞지?
+
+            List<String> userIdList = findUserIdByWorkDateMapper.findUserInfoByWorkDate(paramMap);
+
+            for (int idx = 0 ; idx < userIdList.size(); idx++)
+            {
+                paramMap.clear();
+                paramMap.put("userId", userIdList.get(idx));
+                UserinfoNoPasswordLevelDto userinfoNoPasswordLevelDto = userInfoMapper.findUserInfoByUserIdNoPassword(paramMap);
+                userinfoNoPasswordLevelDtoList.add(userinfoNoPasswordLevelDto);
+            }
+        }
+
         if (userinfoNoPasswordLevelDtoList == null)
         {
             throw new EmptyResultDataAccessException(0);

@@ -4,9 +4,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -14,18 +16,16 @@ import java.io.Reader;
 @Component
 public class MessageJsonParser {
     private JSONObject messageArray;
-
+    private String messagePath;
     @Autowired
     private MessageComponent messageComponent;
-    public MessageJsonParser(MessageComponent messageComponent) throws IOException, ParseException
+    public MessageJsonParser(MessageComponent messageComponent, @Value("${message.path}") String messagePath) throws IOException, ParseException
     {
         this.messageComponent = messageComponent;
         JSONParser parser = new JSONParser();
-        // JSON file read
-        //Reader reader = new FileReader("/Users/kimdonghyun/Desktop/sumichan/message.json");
-        // 하드 코딩인데이거... 시발 이걸 절대경로로 박아두네ㅠ 쩝....
 
-        Reader reader = new FileReader("/home/ubuntu/rest_api_server/CJ/CJ/spring_boot_study/message.json");
+        // 하드 코딩인데이거... 시발 이걸 절대경로로 박아두네ㅠ 쩝....
+        Reader reader = new FileReader(messagePath);
         messageArray = (JSONObject) parser.parse(reader);
         this.setMessageData();
     }

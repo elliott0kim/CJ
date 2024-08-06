@@ -3,6 +3,7 @@ package CJ.CJ.service.client;
 
 import CJ.CJ.dto.client.Action.ActionReqDto;
 import CJ.CJ.dto.client.History.ReceiveReportReqDto;
+import CJ.CJ.dto.client.History.WorkStatusDto;
 import CJ.CJ.dto.client.user.UserInfoDto;
 import CJ.CJ.mapper.client.HeartRateHistoryMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,25 @@ public class ActionUpdateService {
     }
 
     @Transactional
+    public boolean isWorkNowService(String userId)
+    {
+        boolean isWorkNow;
+        HashMap<String, Object> paramMap = new HashMap<>();
+        paramMap.put("userId",userId);
+        WorkStatusDto workStatusDto = new WorkStatusDto();
+        workStatusDto = userInfoMapper.getWorkNowByUserId(paramMap);
+        if (workStatusDto.getWorkStatus() == 1)
+        {
+            isWorkNow = true;
+        }
+        else
+        {
+            isWorkNow = false;
+        }
+        return isWorkNow;
+    }
+
+    @Transactional
     public void receiveReportService(String userId, ReceiveReportReqDto receiveReportReqDto)
     {
         // 현재 시각 얻기
@@ -55,7 +75,7 @@ public class ActionUpdateService {
         UserInfoDto userInfoDto = new UserInfoDto();
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("userId",userId);
-        userInfoDto = userInfoMapper.findUserInfoById(paramMap);
+        userInfoDto = userInfoMapper.findUserInfoByUserId(paramMap);
 
         paramMap.put("threshold", userInfoDto.getThreshold());
         paramMap.put("reportHeartRate",receiveReportReqDto.getReportHeartRate());
